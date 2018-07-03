@@ -7,7 +7,6 @@ import "C"
 import (
 	"context"
 	"errors"
-	"fmt"
 	"reflect"
 	"time"
 	"unsafe"
@@ -91,7 +90,6 @@ func dialDHTxxAndGetResponse(pin int, boostPerfFlag bool) ([]Pulse, error) {
 	return pulses, nil
 }
 
-// TODO write comment to function
 func decodeByte(pulses []Pulse, start int) (byte, error) {
 	/*if len(pulses)-start < 16 {
 		return 0, fmt.Errorf("Can't decode byte, since range between "+
@@ -99,14 +97,14 @@ func decodeByte(pulses []Pulse, start int) (byte, error) {
 	}*/
 	var b int = 0
 	for i := 0; i < 8; i++ {
-		pulseL := pulses[start+i*2]
+		//pulseL := pulses[start+i*2]
 		pulseH := pulses[start+i*2+1]
-		if pulseL.Value != 0 {
+		/*if pulseL.Value != 0 {
 			return 0, fmt.Errorf("Low edge value expected at index %d", start+i*2)
 		}
 		if pulseH.Value == 0 {
 			return 0, fmt.Errorf("High edge value expected at index %d", start+i*2+1)
-		}
+		}*/
 		const HIGH_DUR_MAX = (70 + (70 + 54)) / 2 * time.Microsecond
 		// Calc average value between 24us (bit 0) and 70us (bit 1).
 		// Everything that less than this param is bit 0, bigger - bit 1.
