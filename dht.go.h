@@ -18,7 +18,7 @@
 // GPIO direction: receive either output data to specific GPIO pin.
 #define IN  0
 #define OUT 1
- 
+
 // LOW correspong to low level of output signal, HIGH correspond to high level.
 #define LOW  0
 #define HIGH 1
@@ -56,7 +56,7 @@ static void create_error(Error **err, const char* format, ...) {
         va_end(argptr);
     }
 }
- 
+
 static void free_error(Error *err) {
     if (err != NULL) {
         free(err->message);
@@ -93,7 +93,7 @@ static int gpio_export(int port, Pin *pin, Error **err) {
     pin->pin = -1;
     pin->fd_direction = -1;
     pin->fd_value = -1;
-                 
+
     fd = open("/sys/class/gpio/export", O_WRONLY);
     if (-1 == fd) {
         create_error(err, "failed to open GPIO export for writing");
@@ -123,7 +123,7 @@ static int gpio_export(int port, Pin *pin, Error **err) {
         create_error(err, "failed to open pin %d direction for writing", pin->pin);
         return -1;
     }
-                             
+
     #define VALUE_MAX 30
     char path2[VALUE_MAX];
     snprintf(path2, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin->pin);
@@ -132,7 +132,7 @@ static int gpio_export(int port, Pin *pin, Error **err) {
         create_error(err, "failed to open pin %d value for reading", pin->pin);
         return -1;
     }
-                             
+
     return 0;
 }
 
@@ -153,13 +153,13 @@ static int gpio_unexport(Pin *pin, Error **err) {
         char buffer[BUFFER_MAX];
         ssize_t bytes_written;
         int fd;
-                 
+
         fd = open("/sys/class/gpio/unexport", O_WRONLY);
         if (-1 == fd) {
             create_error(err, "failed to open unexport for writing");
             return -1;
         }
-                         
+
         bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin->pin);
         if (-1 == write(fd, buffer, bytes_written)) {
             create_error(err, "failed to unexport pin %d", pin->pin);
@@ -171,7 +171,7 @@ static int gpio_unexport(Pin *pin, Error **err) {
     }
     return 0;
 }
- 
+
 // Setup pin mode: input or output.
 static int gpio_direction(Pin *pin, int dir, Error **err) {
     static const char s_directions_str[]  = "in\0out";
@@ -219,7 +219,7 @@ static int gpio_write(Pin *pin, int value, Error **err) {
 
 // Macro to convert timespec structure value to microseconds.
 #define convert_timespec_to_usec(t) ((t).tv_sec*1000*1000 + (t).tv_nsec/1000)
- 
+
 // Read sequence of data from the pin trigering
 // on edge change until timeout occures.
 // Collect as well durations of pulses in microseconds.
@@ -230,7 +230,7 @@ static int gpio_read_seq_until_timeout(Pin *pin,
     int32_t last_v, next_v;
 #define MAX_PULSE_COUNT 16000
     int values[MAX_PULSE_COUNT*2];
-    
+
     last_v = gpio_read(pin, err);
     if (-1 == last_v) {
         create_error(err, "failed to read value");
@@ -253,7 +253,7 @@ static int gpio_read_seq_until_timeout(Pin *pin,
         }
 
         if (last_v != next_v) {
-            clock_gettime(CLOCK_KIND, &next_t); 
+            clock_gettime(CLOCK_KIND, &next_t);
             i = 0;
             k++;
             if (k > MAX_PULSE_COUNT-1) {
@@ -263,13 +263,13 @@ static int gpio_read_seq_until_timeout(Pin *pin,
             values[k*2] = next_v;
             // Save time duration in microseconds.
             values[k*2-1] = convert_timespec_to_usec(next_t) -
-                convert_timespec_to_usec(last_t); 
+                convert_timespec_to_usec(last_t);
             last_v = next_v;
             last_t = next_t;
         }
 
         if (i++ > 20) {
-            clock_gettime(CLOCK_KIND, &next_t); 
+            clock_gettime(CLOCK_KIND, &next_t);
             if ((convert_timespec_to_usec(next_t) -
                 convert_timespec_to_usec(last_t)) / 1000 > timeout_msec) {
                 values[k*2+1] = timeout_msec * 1000;
@@ -284,7 +284,7 @@ static int gpio_read_seq_until_timeout(Pin *pin,
         (*arr)[i*2+1] = values[i*2+1];
     }
     *len = (k+1)*2;
-                                 
+
 /*    fprintf(stdout, "scan %d values\n", k+1);
     for (i=0; i<=k; i++)
     {
@@ -292,7 +292,7 @@ static int gpio_read_seq_until_timeout(Pin *pin,
     }*/
     return 0;
 }
- 
+
 // Used to gain maximum performance from device during
 // receiving bunch of data from sensors like DHTxx.
 static int set_max_priority(Error **err) {
@@ -387,7 +387,7 @@ static int dial_DHTxx_and_read(int32_t pin, int32_t boostPerfFlag,
         return -1;
     }
     // Sleep 500 millisecond.
-    sleep_usec(500*1000); 
+    sleep_usec(500*1000);
     // Set pin to low.
     if (-1 == gpio_write(&p, LOW, err)) {
         gpio_unexport(&p, err);
@@ -395,7 +395,7 @@ static int dial_DHTxx_and_read(int32_t pin, int32_t boostPerfFlag,
         return -1;
     }
     // Sleep 18 milliseconds according to DHTxx specification.
-    sleep_usec(18*1000); 
+    sleep_usec(18*1000);
     // Switch pin to input mode
     if (-1 == gpio_direction(&p, IN, err)) {
         gpio_unexport(&p, err);
