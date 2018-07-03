@@ -93,10 +93,10 @@ func dialDHTxxAndGetResponse(pin int, boostPerfFlag bool) ([]Pulse, error) {
 
 // TODO write comment to function
 func decodeByte(pulses []Pulse, start int) (byte, error) {
-	if len(pulses)-start < 16 {
+	/*if len(pulses)-start < 16 {
 		return 0, fmt.Errorf("Can't decode byte, since range between "+
 			"index and array length is less than 16: %d, %d", start, len(pulses))
-	}
+	}*/
 	var b int = 0
 	for i := 0; i < 8; i++ {
 		pulseL := pulses[start+i*2]
@@ -111,10 +111,10 @@ func decodeByte(pulses []Pulse, start int) (byte, error) {
 		// Calc average value between 24us (bit 0) and 70us (bit 1).
 		// Everything that less than this param is bit 0, bigger - bit 1.
 		const HIGH_DUR_AVG = (24 + (70-24)/2) * time.Microsecond
-		if pulseH.Duration > HIGH_DUR_MAX {
+		/*	if pulseH.Duration > HIGH_DUR_MAX {
 			return 0, fmt.Errorf("High edge value duration %v exceed "+
 				"expected maximum amount %v", pulseH.Duration, HIGH_DUR_MAX)
-		}
+		}*/
 		if pulseH.Duration > HIGH_DUR_AVG {
 			//fmt.Printf("bit %d is high\n", 7-i)
 			b = b | (1 << uint(7-i))
@@ -194,7 +194,7 @@ func decodeDHTxxPulses(sensorType SensorType, pulses []Pulse) (temperature float
 // var buf bytes.Buffer
 // for i, pulse := range pulses {
 // 	buf.WriteString(fmt.Sprintf("pulse %3d: %v, %v\n", i,
-// 		pulse.Value, pulse.Duration))
+// 		pulse.Value, puse.Duration))
 // }
 // lg.Debugf("Pulse count %d:\n%v", len(pulses), buf.String())
 //lg.Debugf("Pulses received from DHTxx sensor: %v", pulses)
