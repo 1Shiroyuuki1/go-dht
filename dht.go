@@ -7,6 +7,7 @@ import "C"
 import (
 	"context"
 	"errors"
+	"log"
 	"reflect"
 	"time"
 	"unsafe"
@@ -217,13 +218,18 @@ func ReadDHTxx(sensorType SensorType, pin int,
 	// Activate sensor and read data to pulses array
 	pulses, err := dialDHTxxAndGetResponse(pin, boostPerfFlag)
 	if err != nil {
-		return -1, -1, err
+		//Instead of returning -1°C you should return "nil" + err || just err.
+		//In my opinion: If the pulses fails you shoudnt return a value like -1
+		//return -1, -1, err
+		log.Fatal(err)
 	}
 	// Output debug information
 	// Decode pulses
 	temp, hum := decodeDHTxxPulses(sensorType, pulses)
 	if err != nil {
-		return -1, -1, err
+		//Same here as above
+		//return -1, -1, err
+		log.Fatal(err)
 	}
 	return temp, hum, nil
 }
