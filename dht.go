@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	shell "github.com/d2r2/go-shell"
+	shell "github.com/Shiroyuuuki/go-shell"
 )
 
 type SensorType int
