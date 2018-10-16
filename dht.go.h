@@ -219,7 +219,6 @@ static int gpio_write(Pin *pin, int value, Error **err) {
 
 // Macro to convert timespec structure value to microseconds.
 #define convert_timespec_to_usec(t) ((t).tv_sec*1000*1000 + (t).tv_nsec/1000)
-
 // Read sequence of data from the pin trigering
 // on edge change until timeout occures.
 // Collect as well durations of pulses in microseconds.
@@ -361,7 +360,7 @@ static int blink_n_times(int pin, int n, Error **err) {
     return gpio_unexport(&p, err);
 }
 
-// Activate DHTxx sensor and collect data sent by sensor for futher processing.
+//Activate DHTxx sensor and collect data sent by sensor for futher processing.
 static int dial_DHTxx_and_read(int32_t pin, int32_t boostPerfFlag,
         int32_t **arr, int32_t *arr_len, Error **err) {
     // Set maximum priority for GPIO processing.
