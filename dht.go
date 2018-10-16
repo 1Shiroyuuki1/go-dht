@@ -220,11 +220,6 @@ func ReadDHTxx(sensorType SensorType, pin int,
 	if err != nil {
 		//Instead of returning -1°C you should return "nil" + err || just err.
 		//In my opinion: If the pulses fails you shoudnt return a value like -1
-<<<<<<< HEAD
-		//eturn -1, -1, err
-=======
-		//return -1, -1, err
->>>>>>> b935d4d2a9432ef1a99260b8e115e62a10459098
 		log.Fatal(err)
 	}
 	// Output debug information
